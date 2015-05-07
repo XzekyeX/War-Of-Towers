@@ -25,6 +25,8 @@ public class Downloader extends JFrame {
 	private JPanel contentPane;
 	private CellRenderer cellRenderer = new CellRenderer();
 	private JComboBox<Version> comboBox = new JComboBox<Version>();
+	private JButton btnDownload = new JButton("Download");
+	private JButton btnPlay = new JButton("Play");
 
 	/**
 	 * Create the frame.
@@ -45,28 +47,35 @@ public class Downloader extends JFrame {
 		comboBox.setRenderer(cellRenderer);
 		contentPane.add(comboBox);
 
-		JButton btnPlay = new JButton("Play");
-		btnPlay.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-
-			}
-		});
-		contentPane.add(btnPlay);
-		JButton btnDownload = new JButton("Download");
 		btnDownload.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-
+				Version v = (Version) comboBox.getSelectedItem();
+				if (v != null) {
+					System.out.println("v: " + v);
+				}
 			}
 		});
 		contentPane.add(btnDownload);
+		btnPlay.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Version v = (Version) comboBox.getSelectedItem();
+				if (v != null) {
+					if (!v.openJar()) {
+						btnPlay.setEnabled(false);
+					}
+				}
+			}
+		});
+		contentPane.add(btnPlay);
 		setItems();
 	}
 
 	public void setItems() {
 		comboBox.removeAllItems();
-		for (Version v : getVersions()) {
+		List<Version> list = getVersions();
+		for (Version v : list) {
 			comboBox.addItem(v);
 		}
 	}

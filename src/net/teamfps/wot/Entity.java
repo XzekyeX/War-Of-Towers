@@ -39,4 +39,43 @@ public abstract class Entity {
 	public float getRotY() {
 		return ry;
 	}
+
+	public Entity add(float x, float y, float z) {
+		this.x += x;
+		this.y += y;
+		this.z += z;
+		return this;
+	}
+
+	public Entity minus(float x, float y, float z) {
+		this.x -= x;
+		this.y -= y;
+		this.z -= z;
+		return this;
+	}
+
+	public Entity addRot(float x, float y) {
+		this.rx += x;
+		this.ry += y;
+		return this;
+	}
+
+	public Entity minusRot(float x, float y) {
+		this.rx -= x;
+		this.ry -= y;
+		return this;
+	}
+
+	public Entity setRot(float rx, float ry) {
+		this.rx = rx;
+		this.ry = ry;
+		return this;
+	}
+
+	public Entity setPos(float x, float y, float z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		return this;
+	}
 }

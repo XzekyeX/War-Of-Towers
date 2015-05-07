@@ -19,7 +19,8 @@ public class Level {
 				}
 			}
 		}
-		player = new Player(0, -64, 0);
+		player = new Player(64, -64, 128);
+		player.setRot(142, 0);
 	}
 
 	public void update() {

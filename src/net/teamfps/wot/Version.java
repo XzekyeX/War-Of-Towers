@@ -2,10 +2,12 @@ package net.teamfps.wot;
 
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,6 +41,42 @@ public class Version {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean openJar() {
+		File f = new File(name);
+		if (f.exists()) {
+			try {
+				Process p = Runtime.getRuntime().exec("java -Xmx1G -Xms1G -jar \"" + f + "\" offline");
+				handleStream(p.getInputStream());
+				handleStream(p.getErrorStream());
+				System.out.println(p + " Is trying to open: " + f);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		} else {
+			return false;
+		}
+		return true;
+	}
+
+	public void handleStream(InputStream stream) {
+		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				try {
+					String s = "";
+					while ((s = br.readLine()) != null) {
+						System.out.println("" + s);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();
 	}
 
 	public String getLink() {

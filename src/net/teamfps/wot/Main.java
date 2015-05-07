@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.Canvas;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -24,8 +25,9 @@ import org.lwjgl.opengl.Display;
  */
 public class Main extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
-	public static int width = 640;
-	public static int height = 480;
+	public static int width = 1280;
+	public static int height = 720;
+	private static boolean offline = true;
 	private static String version = "V.0.1";
 	private static JFrame f = new JFrame("War Of Towers " + version);
 	private Thread thread;
@@ -33,12 +35,10 @@ public class Main extends Canvas implements Runnable {
 
 	private Screen screen;
 	private Input input;
-	private Camera camera;
 
 	private void init() {
 		createDisplay();
 		input = new Input();
-		camera = new Camera();
 		screen = new Screen();
 		initGL();
 		addKeyListener(input);
@@ -53,7 +53,7 @@ public class Main extends Canvas implements Runnable {
 		f.setSize(width, height);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setLocationRelativeTo(null);
-		f.setResizable(true);
+		f.setResizable(false);
 		f.setVisible(true);
 	}
 
@@ -167,8 +167,9 @@ public class Main extends Canvas implements Runnable {
 	}
 
 	private void update() {
-		screen.update();
-		camera.update();
+		if (Mouse.isGrabbed()) {
+			screen.update();
+		}
 		if (Mouse.isButtonDown(0)) {
 			Mouse.setGrabbed(true);
 		}
@@ -180,21 +181,37 @@ public class Main extends Canvas implements Runnable {
 	private void render() {
 		Bitmap.clear();
 		glPushMatrix();
+		glEnable(GL_DEPTH_TEST);
 		Bitmap.GluPerspective(65, 1f, -1f, width, height);
 		{
 			screen.renderGlu();
 		}
+		glDisable(GL_DEPTH_TEST);
 		glPopMatrix();
+
 		glPushMatrix();
 		Bitmap.OrthoGraphics(width, height);
 		{
 			screen.renderOrtho();
 			Font.renderString(getFpsAndUps(), 16, 12, 12);
+			Font.renderString("Mouse Grabbed: " + Mouse.isGrabbed(), 16, 12, 32);
 		}
 		glPopMatrix();
 	}
 
-	private static boolean offline = false;
+	private static void loadOS() {
+		String os = System.getProperty("os.name");
+		System.getProperties().list(System.out);
+		if (os.contains("Windows")) {
+			System.setProperty("org.lwjgl.librarypath", new File("native/windows").getAbsolutePath());
+		} else if (os.contains("Mac")) {
+			System.setProperty("org.lwjgl.librarypath", new File("native/macosx").getAbsolutePath());
+		} else if (os.contains("Linux")) {
+			System.setProperty("org.lwjgl.librarypath", new File("native/linux").getAbsolutePath());
+		} else if (os.contains("Solaris")) {
+			System.setProperty("org.lwjgl.librarypath", new File("native/solaris").getAbsolutePath());
+		}
+	}
 
 	public static void main(String[] args) {
 		if (args.length > 0) {
@@ -204,6 +221,7 @@ public class Main extends Canvas implements Runnable {
 			}
 		}
 		if (Main.CurrentVersion() || offline) {
+			loadOS();
 			new Main().start();
 		} else {
 			new Downloader();
