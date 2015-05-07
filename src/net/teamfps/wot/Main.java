@@ -6,6 +6,11 @@ package net.teamfps.wot;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.Canvas;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.JFrame;
 
@@ -77,9 +82,22 @@ public class Main extends Canvas implements Runnable {
 		Bitmap.clear(0.1f, 0.3f, 1.0f, 1.0f);
 	}
 
-	protected boolean CurrentVersion() {
-		
+	protected static boolean CurrentVersion() {
+		String newest = getNewestVersion();
+		System.out.println("Newest: " + newest);
 		return true;
+	}
+
+	protected static String getNewestVersion() {
+		String link = "https://raw.githubusercontent.com/XzekyeX/War-Of-Towers/master/Version.fps";
+		try {
+			URL url = new URL(link);
+			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+			return "" + br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return version;
 	}
 
 	public void start() {
@@ -178,6 +196,10 @@ public class Main extends Canvas implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		new Main().start();
+		if (Main.CurrentVersion()) {
+			new Main().start();
+		} else {
+			new Downloader();
+		}
 	}
 }
