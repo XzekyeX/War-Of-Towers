@@ -9,7 +9,6 @@ import java.awt.Canvas;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.JFrame;
@@ -85,7 +84,7 @@ public class Main extends Canvas implements Runnable {
 	protected static boolean CurrentVersion() {
 		String newest = getNewestVersion();
 		System.out.println("Newest: " + newest);
-		return true;
+		return version.equals(newest);
 	}
 
 	protected static String getNewestVersion() {
@@ -195,8 +194,16 @@ public class Main extends Canvas implements Runnable {
 		glPopMatrix();
 	}
 
+	private static boolean offline = false;
+
 	public static void main(String[] args) {
-		if (Main.CurrentVersion()) {
+		if (args.length > 0) {
+			String s = args[0].toLowerCase();
+			if (s.equals("offline")) {
+				offline = true;
+			}
+		}
+		if (Main.CurrentVersion() || offline) {
 			new Main().start();
 		} else {
 			new Downloader();
