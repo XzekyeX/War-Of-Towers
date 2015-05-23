@@ -1,5 +1,9 @@
 package net.teamfps.wot;
-
+/**
+ * 
+ * @author Zekye
+ *
+ */
 public class Sand extends Block {
 
 	public Sand(int x, int y, int z) {

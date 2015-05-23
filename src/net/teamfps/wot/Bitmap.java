@@ -33,7 +33,11 @@ public class Bitmap {
 		glMatrixMode(GL_MODELVIEW);
 	}
 
-	public static void renderBlock(Sprite sprite, int x, int y, int z, int w, int h, int d) {
+	public static void rotate(float angle, float x, float y, float z) {
+		glRotatef(angle, x, y, z);
+	}
+
+	public static void renderBlock(Sprite sprite, float x, float y, float z, float w, float h, float d) {
 		if (sprite == null) return;
 		glPushMatrix();
 		glTranslatef(x, y, z);

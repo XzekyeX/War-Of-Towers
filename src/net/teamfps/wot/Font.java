@@ -2,12 +2,17 @@ package net.teamfps.wot;
 
 import java.util.regex.*;
 
+/**
+ * 
+ * @author Zekye
+ *
+ */
 public class Font {
-	
-//	class Typography {
-//		public Typography(String name,String ) {}
-//	}
-	
+
+	// class Typography {
+	// public Typography(String name,String ) {}
+	// }
+
 	public static void renderString(String str, int fsize, int x, int y) {
 		if (str.length() <= 0) return;
 		String[] split = str.split("");

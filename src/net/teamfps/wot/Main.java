@@ -7,10 +7,14 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.Canvas;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.swing.JFrame;
 
@@ -34,17 +38,11 @@ public class Main extends Canvas implements Runnable {
 	private boolean running;
 
 	private Screen screen;
-	private Input input;
 
 	private void init() {
 		createDisplay();
-		input = new Input();
 		screen = new Screen();
 		initGL();
-		addKeyListener(input);
-		addMouseListener(input);
-		addMouseWheelListener(input);
-		addMouseMotionListener(input);
 	}
 
 	private void createFrame() {
@@ -97,6 +95,31 @@ public class Main extends Canvas implements Runnable {
 			e.printStackTrace();
 		}
 		return version;
+	}
+
+	protected static String getNewestVersionGZIP() {
+		String link = "https://raw.githubusercontent.com/XzekyeX/War-Of-Towers/master/Version.fps";
+		try {
+			URL url = new URL(link);
+			BufferedReader br = new BufferedReader(new InputStreamReader(new GZIPInputStream(url.openStream())));
+			return "" + br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return version;
+	}
+
+	protected static void writeVersionFileGZIP() {
+		try {
+			System.out.println("Creating Version file!");
+			DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(new File("Version.fps"))));
+			byte[] bytes = version.getBytes();
+			dos.write(bytes);
+			System.out.println("Writing: " + bytes);
+			dos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void start() {
@@ -167,14 +190,17 @@ public class Main extends Canvas implements Runnable {
 	}
 
 	private void update() {
-		if (Mouse.isGrabbed()) {
-			screen.update();
-		}
-		if (Mouse.isButtonDown(0)) {
-			Mouse.setGrabbed(true);
-		}
+		// if (Mouse.isGrabbed()) {
+		screen.update();
+		// }
+		// if (Mouse.isButtonDown(0)) {
+		// Mouse.setGrabbed(true);
+		// }
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			Mouse.setGrabbed(false);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_G)) {
+			Mouse.setGrabbed(true);
 		}
 	}
 
@@ -182,7 +208,7 @@ public class Main extends Canvas implements Runnable {
 		Bitmap.clear();
 		glPushMatrix();
 		glEnable(GL_DEPTH_TEST);
-		Bitmap.GluPerspective(65, 1f, -1f, width, height);
+		Bitmap.GluPerspective(65, 0.01f, -1f, width, height);
 		{
 			screen.renderGlu();
 		}
@@ -194,7 +220,7 @@ public class Main extends Canvas implements Runnable {
 		{
 			screen.renderOrtho();
 			Font.renderString(getFpsAndUps(), 16, 12, 12);
-			Font.renderString("Mouse Grabbed: " + Mouse.isGrabbed(), 16, 12, 32);
+			Font.renderString("Mouse Grabbed:" + Mouse.isGrabbed(), 16, 12, 32);
 		}
 		glPopMatrix();
 	}
@@ -220,6 +246,7 @@ public class Main extends Canvas implements Runnable {
 				offline = true;
 			}
 		}
+		Main.writeVersionFileGZIP();
 		if (Main.CurrentVersion() || offline) {
 			loadOS();
 			new Main().start();

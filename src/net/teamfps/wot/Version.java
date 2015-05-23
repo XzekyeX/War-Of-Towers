@@ -15,6 +15,11 @@ import java.net.URLConnection;
 
 import javax.swing.SwingWorker;
 
+/**
+ * 
+ * @author Zekye
+ *
+ */
 public class Version {
 	protected String link;
 	protected String name;

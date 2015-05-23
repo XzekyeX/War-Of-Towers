@@ -5,7 +5,11 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-
+/**
+ * 
+ * @author Zekye
+ *
+ */
 public class CellRenderer extends JLabel implements ListCellRenderer<Version> {
 	private static final long serialVersionUID = 1L;
 

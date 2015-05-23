@@ -1,11 +1,15 @@
 package net.teamfps.wot;
-
+/**
+ * 
+ * @author Zekye
+ *
+ */
 public class Screen {
 	private Level level;
 	private int delay = 20;
 
 	public Screen() {
-		level = new Level(8, 8, 8);
+		level = new Level(4, 1, 4);
 	}
 
 	public void update() {

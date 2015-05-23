@@ -1,8 +1,16 @@
 package net.teamfps.wot;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
+/**
+ * 
+ * @author Zekye
+ *
+ */
 public class Player extends Entity {
 
 	public Player(float x, float y, float z) {
@@ -10,8 +18,9 @@ public class Player extends Entity {
 		this.y = y;
 		this.z = z;
 		this.w = 32;
-		this.h = 64;
+		this.h = 32;
 		this.d = 32;
+		this.sprite = Sprite.getBlock("lapis_block.png");
 	}
 
 	@Override
@@ -32,7 +41,7 @@ public class Player extends Entity {
 		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			za--;
 		}
-		moveRelative(xa, za, speed);
+		move(xa, za, speed);
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			y -= speed;
 		}
@@ -46,23 +55,29 @@ public class Player extends Entity {
 			rx += mspeed;
 		}
 		rx += Mouse.getDX() * mspeed;
-	}
-
-	private void moveRelative(float xa, float za, float speed) {
-		float dist = xa * xa + za * za;
-		if (dist < 0.01F) return;
-		dist = speed / (float) Math.sqrt(dist);
-		xa *= dist;
-		za *= dist;
-		float sin = (float) Math.sin(rx * Math.PI / 180.0D);
-		float cos = (float) Math.cos(rx * Math.PI / 180.0D);
-		this.x += xa * cos - za * sin;
-		this.z += za * cos + xa * sin;
+		ry += Mouse.getDY() * mspeed;
+		if (ry >= 90) {
+			ry = 90;
+		}
+		if (ry <= -90) {
+			ry = -90;
+		}
 	}
 
 	@Override
-	public void render() {
+	public void renderGlu() {
+		// System.out.println("pos(" + x + "," + y + "," + z + ")");
+		Bitmap.renderBlock(sprite, x, y, z - 128, w, h, d);
+	}
 
+	@Override
+	public void renderOrtho() {
+
+	}
+
+	@Override
+	public String toString() {
+		return "Player(P(" + (int) x + "," + (int) y + "," + (int) z + "),R(" + (int) rx + "," + (int) ry + "))";
 	}
 
 }

@@ -19,6 +19,11 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * 
+ * @author Zekye
+ *
+ */
 public class Downloader extends JFrame {
 
 	private static final long serialVersionUID = 1L;
